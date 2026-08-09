@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>CloudOps Monitor</title>
 
     <style>
@@ -13,10 +14,12 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
             background: #f4f6f8;
             color: #1f2937;
         }
+
+        /* Header */
 
         .header {
             background: #111827;
@@ -26,18 +29,23 @@
 
         .header h1 {
             font-size: 28px;
+            margin-bottom: 6px;
         }
 
         .header p {
-            margin-top: 6px;
             color: #9ca3af;
+            font-size: 14px;
         }
+
+        /* Main container */
 
         .container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
         }
+
+        /* Summary cards */
 
         .cards {
             display: grid;
@@ -64,6 +72,16 @@
             font-weight: bold;
         }
 
+        .running {
+            color: #16a34a;
+        }
+
+        .stopped {
+            color: #dc2626;
+        }
+
+        /* Section */
+
         .section {
             background: white;
             padding: 24px;
@@ -73,7 +91,10 @@
 
         .section h2 {
             margin-bottom: 20px;
+            font-size: 20px;
         }
+
+        /* Table */
 
         table {
             width: 100%;
@@ -89,27 +110,66 @@
 
         th {
             background: #f9fafb;
+            color: #4b5563;
             font-size: 14px;
         }
+
+        td {
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status */
 
         .status {
             font-weight: bold;
         }
 
-        .running {
+        /* CPU */
+
+        .cpu {
+            font-weight: bold;
+        }
+
+        .cpu-low {
             color: #16a34a;
         }
 
-        .stopped {
+        .cpu-medium {
+            color: #d97706;
+        }
+
+        .cpu-high {
             color: #dc2626;
         }
+
+        .cpu-na {
+            color: #6b7280;
+        }
+
+        /* Empty state */
 
         .empty {
             color: #6b7280;
             padding: 20px 0;
         }
 
+        /* Footer */
+
+        .footer {
+            text-align: center;
+            color: #6b7280;
+            font-size: 13px;
+            padding: 25px;
+        }
+
+        /* Responsive */
+
         @media (max-width: 768px) {
+
             .cards {
                 grid-template-columns: 1fr;
             }
@@ -117,92 +177,202 @@
             .header {
                 padding: 20px;
             }
+
+            .container {
+                margin-top: 20px;
+            }
+
+            .section {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 700px;
+            }
         }
     </style>
 </head>
 
 <body>
 
+    <!-- Header -->
+
     <header class="header">
         <h1>CloudOps Monitor</h1>
         <p>AWS Infrastructure Monitoring Dashboard</p>
     </header>
 
+
+    <!-- Main -->
+
     <main class="container">
+
+        <!-- Summary Cards -->
 
         <section class="cards">
 
             <div class="card">
-                <div class="card-title">EC2 Instances</div>
-                <div class="card-value">{{ total_instances }}</div>
+                <div class="card-title">
+                    EC2 Instances
+                </div>
+
+                <div class="card-value">
+                    {{ total_instances }}
+                </div>
             </div>
 
+
             <div class="card">
-                <div class="card-title">Running Instances</div>
+                <div class="card-title">
+                    Running Instances
+                </div>
+
                 <div class="card-value running">
                     {{ running_count }}
                 </div>
             </div>
 
+
             <div class="card">
-                <div class="card-title">AWS Region</div>
-                <div class="card-value">ap-south-2</div>
+                <div class="card-title">
+                    AWS Region
+                </div>
+
+                <div class="card-value">
+                    ap-south-2
+                </div>
             </div>
 
         </section>
+
+
+        <!-- EC2 Instances -->
 
         <section class="section">
 
             <h2>EC2 Instances</h2>
 
+
             {% if instances %}
 
             <table>
+
                 <thead>
+
                     <tr>
                         <th>Instance ID</th>
                         <th>Instance Type</th>
+                        <th>CPU Usage</th>
                         <th>Status</th>
                     </tr>
+
                 </thead>
+
 
                 <tbody>
 
                     {% for instance in instances %}
 
                     <tr>
-                        <td>{{ instance.instance_id }}</td>
-                        <td>{{ instance.instance_type }}</td>
 
-                        <td class="status
-                            {% if instance.state == 'running' %}
-                                running
-                            {% else %}
-                                stopped
-                            {% endif %}
-                        ">
-                            {% if instance.state == 'running' %}
-                                ● Running
-                            {% else %}
-                                ● {{ instance.state|capitalize }}
-                            {% endif %}
+                        <!-- Instance ID -->
+
+                        <td>
+                            {{ instance.instance_id }}
                         </td>
+
+
+                        <!-- Instance Type -->
+
+                        <td>
+                            {{ instance.instance_type }}
+                        </td>
+
+
+                        <!-- CPU Usage -->
+
+                        <td>
+
+                            {% if instance.cpu is not none %}
+
+                                {% if instance.cpu < 50 %}
+
+                                    <span class="cpu cpu-low">
+                                        {{ instance.cpu }}%
+                                    </span>
+
+                                {% elif instance.cpu < 80 %}
+
+                                    <span class="cpu cpu-medium">
+                                        {{ instance.cpu }}%
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="cpu cpu-high">
+                                        {{ instance.cpu }}%
+                                    </span>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <span class="cpu cpu-na">
+                                    N/A
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Status -->
+
+                        <td>
+
+                            {% if instance.state == "running" %}
+
+                                <span class="status running">
+                                    ● Running
+                                </span>
+
+                            {% else %}
+
+                                <span class="status stopped">
+                                    ● {{ instance.state | capitalize }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
                     </tr>
 
                     {% endfor %}
 
                 </tbody>
+
             </table>
+
 
             {% else %}
 
-            <p class="empty">No EC2 instances found.</p>
+                <p class="empty">
+                    No EC2 instances found.
+                </p>
 
             {% endif %}
 
         </section>
 
     </main>
+
+
+    <!-- Footer -->
+
+    <footer class="footer">
+        CloudOps Monitor · AWS Infrastructure Monitoring
+    </footer>
 
 </body>
 </html>
