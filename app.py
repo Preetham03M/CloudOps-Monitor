@@ -1,7 +1,10 @@
 from flask import Flask, render_template
-
 from services.ec2_service import get_ec2_instances
-from services.cloudwatch_service import get_cpu_utilization
+from services.cloudwatch_service import (
+    get_cpu_utilization,
+    get_network_in,
+    get_network_out,
+)
 
 app = Flask(__name__)
 
@@ -11,10 +14,14 @@ def home():
     instances = get_ec2_instances()
 
     for instance in instances:
-        instance["cpu"] = get_cpu_utilization(instance["instance_id"])
+        instance_id = instance["instance_id"]
+        instance["cpu"] = get_cpu_utilization(instance_id)
+        instance["network_in"] = get_network_in(instance_id)
+        instance["network_out"] = get_network_out(instance_id)
 
     running_count = sum(
-        1 for instance in instances if instance["state"] == "running"
+        1 for instance in instances
+        if instance["state"] == "running"
     )
 
     return render_template(
