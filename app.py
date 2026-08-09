@@ -20,6 +20,16 @@ def home():
         instance["cpu"] = get_cpu_utilization(instance_id)
         instance["network_in"] = get_network_in(instance_id)
         instance["network_out"] = get_network_out(instance_id)
+        cpu = instance["cpu"]
+
+        if cpu is None:
+            instance["alert"] = None
+        elif cpu >= 80:
+            instance["alert"] = "Critical"
+        elif cpu >= 50:
+            instance["alert"] = "Warning"
+        else:
+            instance["alert"] = None
 
     running_count = sum(
         1 for instance in instances if instance["state"] == "running"
