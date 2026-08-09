@@ -32,6 +32,10 @@
             .cards { grid-template-columns: 1fr; }
             .section { overflow-x: auto; }
             table { min-width: 900px; }
+            .alert { margin-bottom: 20px; }
+               .alert p { margin-top: 8px; }
+                 .alert.warning { border-left: 5px solid #d97706; }
+              .alert.critical { border-left: 5px solid #dc2626; }
         }
     </style>
 </head>
@@ -59,7 +63,14 @@
                 <div class="card-value">ap-south-2</div>
             </div>
         </section>
-
+{% for instance in instances %}
+    {% if instance.alert %}
+        <section class="section alert {{ 'critical' if instance.alert == 'Critical' else 'warning' }}">
+            <strong>🚨 {{ instance.alert }} Alert</strong>
+            <p>{{ instance.instance_id }} CPU usage requires attention.</p>
+        </section>
+    {% endif %}
+{% endfor %}
         <section class="section">
             <h2>EC2 Instances</h2>
 
@@ -132,7 +143,7 @@
             </table>
 
             {% else %}
-                <p class="muted">No EC2 instances found.</p>
+                <p class="muted">⚠ Monitoring data unavailable.</p>
             {% endif %}
         </section>
     </main>
