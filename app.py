@@ -7,6 +7,19 @@ from services.cloudwatch_service import (
 
 app = Flask(__name__)
 
+def format_bytes(value):
+    if value is None:
+        return "N/A"
+
+    units = ["bytes", "KB", "MB", "GB"]
+    size = float(value)
+
+    for unit in units:
+        if size < 1024:
+            return f"{size:.2f} {unit}"
+        size /= 1024
+
+    return f"{size:.2f} TB"
 
 @app.route("/")
 def home():
@@ -19,8 +32,12 @@ def home():
     for instance in instances:
         instance_id = instance["instance_id"]
         instance["cpu"] = get_cpu_utilization(instance_id)
-        instance["network_in"] = get_network_in(instance_id)
-        instance["network_out"] = get_network_out(instance_id)
+        instance["network_in"] = format_bytes(
+            get_network_in(instance_id)
+        )
+        instance["network_out"] = format_bytes(
+            get_network_out(instance_id)
+        )
         cpu = instance["cpu"]
 
         if cpu is None:

@@ -229,7 +229,7 @@
 
                                 <td>
                                     {% if instance.network_in is not none %}
-                                        {{ instance.network_in }} bytes
+                                       <td> {{ instance.network_in }} </td>
                                     {% else %}
                                         <span class="muted">N/A</span>
                                     {% endif %}
@@ -237,7 +237,7 @@
 
                                 <td>
                                     {% if instance.network_out is not none %}
-                                        {{ instance.network_out }} bytes
+                                       <td> {{ instance.network_out }} </td>
                                     {% else %}
                                         <span class="muted">N/A</span>
                                     {% endif %}
