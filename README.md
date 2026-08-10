@@ -8,6 +8,12 @@ CloudOps Monitor is a web-based monitoring application that provides visibility 
 
 The application retrieves EC2 instance information and CloudWatch metrics, processes the data with Python, and displays the results through a Flask web interface.
 
+## Dashboard Preview
+
+![CloudOps Monitor Dashboard](screenshots/dashboard.png)
+
+The dashboard provides a centralized view of EC2 instances, CPU utilization, network traffic, instance health, and current instance status.
+
 ## Features
 
 - Monitor EC2 instance status
