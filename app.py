@@ -42,6 +42,7 @@ def home():
         instances=instances,
         total_instances=len(instances),
         running_count=running_count,
+        update_at=updated_at,
     )
 
 
