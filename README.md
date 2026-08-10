@@ -10,7 +10,6 @@ The application retrieves EC2 instance information and CloudWatch metrics, proce
 
 ## Dashboard Preview
 
-![CloudOps Monitor Dashboard](screenshots/dashboard.png)
 
 The dashboard provides a centralized view of EC2 instances, CPU utilization, network traffic, instance health, and current instance status.
 
