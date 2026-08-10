@@ -148,7 +148,7 @@ CloudOps-Monitor/
 - Docker deployment
 - Terraform infrastructure
 
-  ## Project Status
+## Project Status
 
 Core monitoring, alerting, error handling, and AWS deployment functionality is complete.
 
