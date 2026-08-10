@@ -268,7 +268,7 @@
                     {{ 'critical' if instance.alert == 'Critical' else 'warning' }}">
 
                     <strong>
-                        🚨 {{ instance.alert }} Alert
+                        {{ instance.alert }} Alert
                     </strong>
 
                     <p>
@@ -352,25 +352,25 @@
                                     {% if instance.cpu is none %}
 
                                         <span class="muted">
-                                            ● Unknown
+                                            Unknown
                                         </span>
 
                                     {% elif instance.cpu < 50 %}
 
                                         <span class="good">
-                                            ● Healthy
+                                            Healthy
                                         </span>
 
                                     {% elif instance.cpu < 80 %}
 
                                         <span class="warning">
-                                            ● Warning
+                                            Warning
                                         </span>
 
                                     {% else %}
 
                                         <span class="critical">
-                                            ● Critical
+                                            Critical
                                         </span>
 
                                     {% endif %}
@@ -384,13 +384,13 @@
                                     {% if instance.state == "running" %}
 
                                         <span class="running">
-                                            ● Running
+                                            Running
                                         </span>
 
                                     {% else %}
 
                                         <span class="stopped">
-                                            ● {{ instance.state|capitalize }}
+                                            {{ instance.state|capitalize }}
                                         </span>
 
                                     {% endif %}
@@ -409,7 +409,7 @@
 
                 <!-- Displayed when AWS data cannot be retrieved -->
                 <p class="muted">
-                    ⚠ Monitoring data unavailable.
+                    Monitoring data unavailable.
                 </p>
 
             {% endif %}
