@@ -1,43 +1,53 @@
 # CloudOps Monitor
 
-AWS Infrastructure Monitoring & Automation using Python, Flask, and Boto3.
+AWS infrastructure monitoring dashboard built with Python, Flask, Boto3, and Amazon CloudWatch.
 
 ## Project Overview
 
-CloudOps Monitor is a cloud operations monitoring application designed to provide visibility into AWS infrastructure health, resource status, and monitoring metrics through a centralized web dashboard.
+CloudOps Monitor is a web-based monitoring application that provides visibility into AWS EC2 infrastructure through a centralized dashboard.
 
-## Technologies
+The application retrieves EC2 instance information and CloudWatch metrics, processes the data with Python, and displays the results through a Flask web interface.
 
-- AWS EC2
-- AWS IAM
-- AWS CloudWatch
-- Python
-- Flask
-- Boto3
-- Git
-- GitHub
+## Features
 
-## Current Architecture
+- Monitor EC2 instance status
+- Display running instance count
+- Monitor CPU utilization
+- Monitor Network In and Network Out
+- Display instance health
+- CPU-based warning and critical alerts
+- Automatic dashboard refresh every 60 seconds
+- Last updated timestamp
+- CloudWatch error handling
+- Persistent deployment using Gunicorn and systemd
+- Automatic application restart after EC2 reboot
 
-Windows Development Environment
-|
-v
-GitHub
-|
-v
-AWS EC2
-|
-+-- Flask
-+-- Boto3
-+-- IAM Role
-|
-v
-AWS Services
+## Architecture
 
-## Security
-
-The application uses an IAM role attached to the EC2 instance instead of storing long-lived AWS access keys in the application.
-
-## Project Status
-
-Day 2 - Development environment and AWS authentication completed.
+```text
+User Browser
+     |
+     v
+EC2 Public IP :5000
+     |
+     v
+Gunicorn
+     |
+     v
+Flask Application
+     |
+     +------------------+
+     |                  |
+     v                  v
+   Boto3            Dashboard
+     |
+     v
+IAM Role
+     |
+     +------------------+
+     |                  |
+     v                  v
+   EC2             CloudWatch
+                         |
+                         v
+                CPU / Network Metrics.
