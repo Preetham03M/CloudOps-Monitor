@@ -207,6 +207,11 @@
                 <div class="card-title">AWS Region</div>
                 <div class="card-value">ap-south-2</div>
             </div>
+
+            <div class="card">
+                <div class="card-title">S3 Storage</div>
+                <div class="card-value">{{ "Connected" if s3_status else "Unavailable" }}</div>
+             </div>
         </section>
 
         {% for instance in instances %}

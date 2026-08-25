@@ -5,6 +5,8 @@ from services.cloudwatch_service import (
     get_cpu_utilization, get_network_in, get_network_out
 )
 
+from services.s3_service import check_bucket_access
+
 app = Flask(__name__)
 
 def format_bytes(value):
@@ -28,6 +30,8 @@ def home():
     except Exception as error:
         print(f"EC2 error: {error}")
         instances = []
+
+    s3_status = check_bucket_access()
 
     for instance in instances:
         instance_id = instance["instance_id"]
@@ -60,6 +64,7 @@ def home():
         total_instances=len(instances),
         running_count=running_count,
         updated_at=updated_at,
+        s3_status=s3_status,
     )
 
 
