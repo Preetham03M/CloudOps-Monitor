@@ -1,17 +1,20 @@
 # CloudOps Monitor
 
-AWS infrastructure monitoring dashboard built with Python, Flask, Boto3, and Amazon CloudWatch.
+AWS infrastructure monitoring dashboard built with Python, Flask, Boto3, Amazon EC2, Amazon CloudWatch, and Amazon S3.
 
 ## Project Overview
 
-CloudOps Monitor is a web-based monitoring application that provides visibility into AWS EC2 infrastructure through a centralized dashboard.
+CloudOps Monitor is a web-based monitoring application that provides visibility into AWS EC2 infrastructure and S3 storage connectivity through a centralized dashboard.
 
-The application retrieves EC2 instance information and CloudWatch metrics, processes the data with Python, and displays the results through a Flask web interface.
+The application retrieves EC2 instance information and CloudWatch metrics, processes the data with Python and Boto3, and displays the results through a Flask web interface.
+
+The dashboard also verifies connectivity to a configured Amazon S3 bucket using the S3 `HeadBucket` operation.
 
 ## Dashboard Preview
 
 ![CloudOps Monitor Dashboard](screenshots/dashboard.png)
-The dashboard provides a centralized view of EC2 instances, CPU utilization, network traffic, instance health, and current instance status.
+
+The dashboard provides a centralized view of EC2 instances, CPU utilization, network traffic, instance health, current instance status, AWS region, and S3 bucket connectivity.
 
 ## Features
 
@@ -21,6 +24,8 @@ The dashboard provides a centralized view of EC2 instances, CPU utilization, net
 - Monitor Network In and Network Out
 - Display instance health
 - CPU-based warning and critical alerts
+- Monitor S3 bucket connectivity
+- Verify access to the configured S3 bucket
 - Automatic dashboard refresh every 60 seconds
 - Last updated timestamp
 - CloudWatch error handling
@@ -41,21 +46,27 @@ Gunicorn
      v
 Flask Application
      |
-     +------------------+
-     |                  |
-     v                  v
-   Boto3            Dashboard
+     +-----------------------+
+     |                       |
+     v                       v
+   Boto3                 Dashboard
      |
-     v
-IAM Role
-     |
-     +------------------+
-     |                  |
-     v                  v
-   EC2             CloudWatch
-                         |
-                         v
-                CPU / Network Metrics
+     +-----------------------+
+     |                       |
+     v                       v
+    EC2                 CloudWatch
+                             |
+                             v
+                      CPU / Network Metrics
+
+     Boto3
+       |
+       v
+      S3
+       |
+       v
+Configured Bucket
+Connectivity Check
 ```
 ## Technologies
 
@@ -64,6 +75,7 @@ IAM Role
 - Boto3
 - Amazon EC2
 - Amazon CloudWatch
+- Amazon S3
 - AWS IAM
 - Gunicorn
 - systemd
@@ -83,6 +95,8 @@ The dashboard currently displays:
 - Network In
 - Network Out
 - Instance Health
+- AWS REgion
+- S3 Bucket Connectivity
 
 CPU usage is classified as:
 
@@ -92,13 +106,19 @@ CPU usage is classified as:
 | 50% - 79% | Warning |
 | 80% or higher | Critical |
 
+S3 connectivity is verified by checking access to the configured S3 bucket using the S3 HeadBucket operation.
+
 The dashboard refreshes automatically every 60 seconds.
 
 ## AWS Authentication
 
-The application uses an IAM role attached to the EC2 instance for AWS authentication.
+The deployed application uses an IAM role attached to the EC2 instance for AWS authentication.
 
-AWS access keys and secret keys are not stored in the source code.
+Boto3 is used to access EC2, CloudWatch, and the configured S3 bucket.
+
+AWS access keys and secret keys are not stored in the application source code.
+
+The S3 bucket access follows a least-privilege approach by checking a specific configured bucket rather than listing all S3 buckets.
 
 ## Deployment
 
@@ -120,6 +140,8 @@ The application handles AWS and CloudWatch errors so that unavailable monitoring
 
 When a metric is unavailable, the dashboard can display `N/A` instead of treating the missing value as zero.
 
+S3 access errors are also handled so that the dashboard can display Unavailable when the configured bucket cannot be accessed.
+
 ## Security
 
 - EC2 IAM role is used for AWS authentication
@@ -128,6 +150,7 @@ When a metric is unavailable, the dashboard can display `N/A` instead of treatin
 - `.env` files are excluded from Git
 - Flask debug mode is disabled for deployment
 - EC2 Security Group access is restricted to the configured source IP
+- S3 access is limited to the configured bucket
 
 ## Project Structure
 
@@ -136,9 +159,12 @@ CloudOps-Monitor/
 ├── app.py
 ├── services/
 │   ├── ec2_service.py
-│   └── cloudwatch_service.py
+│   ├── cloudwatch_service.py
+│   └── s3_service.py
 ├── templates/
 │   └── dashboard.html
+├── screenshots/
+│   └── dashboard.png
 ├── requirements.txt
 ├── README.md
 └── .gitignore
@@ -155,6 +181,6 @@ CloudOps-Monitor/
 
 ## Project Status
 
-Core monitoring, alerting, error handling, and AWS deployment functionality is complete.
+Core monitoring, alerting, error handling, S3 connectivity monitoring, and AWS deployment functionality are complete.
 
-Final testing and portfolio review are in progress.
+Final JD alignment, documentation review, and portfolio preparation are in progress.
