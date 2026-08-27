@@ -12,7 +12,7 @@ The dashboard also verifies connectivity to a configured Amazon S3 bucket using 
 
 ## Dashboard Preview
 
-![CloudOps Monitor Dashboard](screenshots/dashboard.png)
+![CloudOps Monitor Dashboard](screenshots/dashboard.png?v=2)
 
 The dashboard provides a centralized view of EC2 instances, CPU utilization, network traffic, instance health, current instance status, AWS region, and S3 bucket connectivity.
 
