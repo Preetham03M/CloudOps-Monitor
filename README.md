@@ -12,7 +12,7 @@ The dashboard also verifies connectivity to a configured Amazon S3 bucket using 
 
 ## Dashboard Preview
 
-![CloudOps Monitor Dashboard](screenshots/dashboard.png?v=2)
+![CloudOps Monitor Dashboard](screenshots/dashboard.png)
 
 The dashboard provides a centralized view of EC2 instances, CPU utilization, network traffic, instance health, current instance status, AWS region, and S3 bucket connectivity.
 
@@ -34,53 +34,52 @@ The dashboard provides a centralized view of EC2 instances, CPU utilization, net
 
 ## Architecture
 
-```text
 User Browser
-     |
-     v
+|
+v
 EC2 Public IP :5000
-     |
-     v
+|
+v
 Gunicorn
-     |
-     v
+|
+v
 Flask Application
-     |
-     +-----------------------+
-     |                       |
-     v                       v
-   Boto3                 Dashboard
-     |
-     +-----------------------+
-     |                       |
-     v                       v
-    EC2                 CloudWatch
-                             |
-                             v
-                      CPU / Network Metrics
+|
++-----------------------+
+| |
+v v
+Boto3 Dashboard
+|
++-----------------------+
+| |
+v v
+EC2 CloudWatch
+|
+v
+CPU / Network Metrics
 
-     Boto3
-       |
-       v
-      S3
-       |
-       v
+Boto3
+|
+v
+S3
+|
+v
 Configured Bucket
 Connectivity Check
-```
+
 ## Technologies
 
-- Python
-- Flask
-- Boto3
+- Python 3.9+
+- Flask 2.3.3
+- Boto3 1.34.131
+- Gunicorn 21.2.0
 - Amazon EC2
 - Amazon CloudWatch
 - Amazon S3
 - AWS IAM
-- Gunicorn
 - systemd
-- HTML
-- CSS
+- HTML5
+- CSS3
 - Git
 - GitHub
 
@@ -95,15 +94,15 @@ The dashboard currently displays:
 - Network In
 - Network Out
 - Instance Health
-- AWS REgion
+- AWS Region
 - S3 Bucket Connectivity
 
 CPU usage is classified as:
 
-| CPU Usage | Status |
-|---|---|
-| Below 50% | Healthy |
-| 50% - 79% | Warning |
+| CPU Usage     | Status   |
+| ------------- | -------- |
+| Below 50%     | Healthy  |
+| 50% - 79%     | Warning  |
 | 80% or higher | Critical |
 
 S3 connectivity is verified by checking access to the configured S3 bucket using the S3 HeadBucket operation.
@@ -134,53 +133,104 @@ The systemd service is configured to:
 
 The deployment was tested by rebooting the EC2 instance and verifying that the application started automatically.
 
-## Error Handling
+## Installation
 
-The application handles AWS and CloudWatch errors so that unavailable monitoring data does not immediately stop the dashboard.
+### Prerequisites
 
-When a metric is unavailable, the dashboard can display `N/A` instead of treating the missing value as zero.
+- Python 3.9 or higher
+- AWS account with appropriate permissions
+- AWS CLI configured with credentials
 
-S3 access errors are also handled so that the dashboard can display Unavailable when the configured bucket cannot be accessed.
+### Steps
 
-## Security
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Preetham03M/CloudOps-Monitor.git
+   cd CloudOps-Monitor
+   ```
+2. Create and activate a virtual environment:
 
-- EC2 IAM role is used for AWS authentication
-- AWS credentials are not stored in the application
-- Private key files are excluded using `.gitignore`
-- `.env` files are excluded from Git
-- Flask debug mode is disabled for deployment
-- EC2 Security Group access is restricted to the configured source IP
-- S3 access is limited to the configured bucket
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   venv\Scripts\activate     # Windows
+
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+
+   ```
+
+4. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+
+# Edit .env with your AWS credentials and region
+
+5. Run the application:
+
+   ```bash
+   python app.py
+
+   ```
+
+6. Access the dashboard:
+   Open your browser and navigate to http://localhost:5000
 
 ## Project Structure
 
-```text
 CloudOps-Monitor/
-├── app.py
+├── app.py # Main Flask application
 ├── services/
-│   ├── ec2_service.py
-│   ├── cloudwatch_service.py
-│   └── s3_service.py
+│ ├── ec2_service.py # EC2 instance operations
+│ ├── cloudwatch_service.py # CloudWatch metrics
+│ └── s3_service.py # S3 connectivity check
 ├── templates/
-│   └── dashboard.html
+│ └── dashboard.html # Dashboard HTML template
 ├── screenshots/
-│   └── dashboard.png
-├── requirements.txt
-├── README.md
-└── .gitignore
-```
-## Future Improvements
+│ └── dashboard.png # Dashboard screenshot
+├── requirements.txt # Python dependencies
+├── README.md # Project documentation
+└── .gitignore # Git ignore file
+
+## Error Handling
+
+The application handles AWS and CloudWatch errors gracefully:
+
+- If EC2 instances cannot be fetched, the dashboard displays an empty state
+- If CloudWatch metrics are unavailable, N/A is displayed
+- If S3 bucket access fails, the dashboard shows Unavailable
+- All errors are logged for troubleshooting
+
+## Security
+
+- IAM roles are used for AWS authentication (no hardcoded credentials)
+- Flask debug mode is disabled in production
+- Ec2 security group restrict access to specific IPs
+- .env files are excluded from version control
+- S3 bucket access follows least-privilege principles
+
+## future Improvements
 
 - HTTPS using Nginx
-- CloudWatch alarms
-- Email or SNS notifications
+- CloudWatch alarms integration
+- Email or SNS notifications for alerts
 - Historical monitoring charts
 - Multiple EC2 instance support
-- Docker deployment
-- Terraform infrastructure
+- Docker containerization
+- Terraform infrastructure as code
+- CI/CD pipeline with GitHub Actions
 
-## Project Status
+## Contributing
 
-Core monitoring, alerting, error handling, S3 connectivity monitoring, and AWS deployment functionality are complete.
+Contributions are welcome! Please follow these steps:
 
-Final JD alignment, documentation review, and portfolio preparation are in progress.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+   For major changes, please open an issue first to discuss.
