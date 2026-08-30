@@ -57,6 +57,7 @@ python app.py
  ```
 ## Project Structure
 
+```bash
 CloudOps-Monitor/
 ├── app.py
 ├── services/
@@ -68,7 +69,7 @@ CloudOps-Monitor/
 ├── requirements.txt
 ├── README.md
 └── .gitignore
-
+```
 ## Live Demo
 
 The dashboard is live at: http://18.61.154.34:5000
