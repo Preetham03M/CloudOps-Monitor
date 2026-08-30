@@ -21,7 +21,7 @@ def format_bytes(value):
     for unit in units:
         if size < 1024:
             return f"{size:.2f} {unit}"
-        size /= 1024
+        size = size / 1024
     return f"{size:.2f} TB"
 
 @app.route("/")
